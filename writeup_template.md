@@ -1,47 +1,89 @@
 # **Finding Lane Lines on the Road** 
 
-## Writeup Template
+## Problem statement
 
-### You can use this file as a template for your writeup if you want to submit it as a markdown file. But feel free to use some other method and submit a pdf if you prefer.
+### Identify lane lines on the road for self driving car. For self driving car we will have video stream through camera and we have to mark lane line. In this project video is input not live stream. Obviously with minor modification can be used in live stream.
 
 ---
 
-**Finding Lane Lines on the Road**
+## Solution overview
 
-The goals / steps of this project are the following:
-* Make a pipeline that finds lane lines on the road
-* Reflect on your work in a written report
+### First we will identify lane line in a single image, then apply to series of images (video). So explaining finding lane line in single images will be sufficient.
 
+---
 
 [//]: # (Image References)
 
-[image1]: ./examples/grayscale.jpg "Grayscale"
+[original_image]: ./writeup_images/original_image.jpg
+[gray_image]: ./writeup_images/gray_image.jpg
+[blur_gray]: ./writeup_images/blur_gray.jpg
+[edges]: ./writeup_images/edges.jpg
+[mask_edges]: ./writeup_images/mask_edges.jpg
+[line_image]: ./writeup_images/line_image.jpg
+[final_img]: ./writeup_images/final_img.jpg
 
----
 
 ### Reflection
 
-### 1. Describe your pipeline. As part of the description, explain how you modified the draw_lines() function.
+### 1. Solution pipeline
 
-My pipeline consisted of 5 steps. First, I converted the images to grayscale, then I .... 
+Pipe line consist of following steps:
 
-In order to draw a single line on the left and right lanes, I modified the draw_lines() function by ...
+- Original image
 
-If you'd like to include images to show how the pipeline works, here is how to include an image: 
+![alt text][original_image]
 
-![alt text][image1]
+- Converted into grayscale
+
+![alt text][gray_image]
+
+- Gaussian blur of grayscale image
+
+![alt text][blur_gray]
+
+- Canny edge detection on gaussian blured image
+
+![alt text][edges]
+
+- As we can see, we are not interested in all edges. So I have used a quadrilateral to masked edges outside it. 
+
+![alt text][mask_edges]
+
+- This masked edges is to find hough line. We can see that right side lines are broken. 
+There may be left side broken line as well. For fixing this we devide all line into two parts left and right.
+Further left and right devided into two parts (further left right on the basis of slope). For all four parts we 
+completed the missing part of lines. 
+
+![alt text][line_image]
+
+- Conbine original input image with completed line image.
+
+![alt text][final_img]
+
+---
+
+### 2. Shortcomings
+
+- In case of curved lanes, masking edges befor hough line is not sufficient. Frurther masking is done on hough line image.
+Sitll need to improve it.
+- Some times lane lines are very lightly or nit visible, in this case it is not working properly.
+- If road is dirty by some other means, in this case unwanted lines is being detected.
+
+### 3. Possible improvements
+
+- Experiment more with hough line functionality of opencv to fix unwanted line. This will fix maximum shortcomings mentioned
+above
 
 
-### 2. Identify potential shortcomings with your current pipeline
 
 
-One potential shortcoming would be what would happen when ... 
-
-Another shortcoming could be ...
 
 
-### 3. Suggest possible improvements to your pipeline
 
-A possible improvement would be to ...
 
-Another potential improvement could be to ...
+
+
+
+
+
+
